@@ -2,17 +2,22 @@ package handler
 
 import (
 	"net/http"
+	"os"
 
+	"github.com/eaware/gindemo/account/model"
 	"github.com/gin-gonic/gin"
 )
 
 // Handler struct holds required services for handler to function
-type Handler struct{}
+type Handler struct {
+	UserService model.UserService
+}
 
 // Config will hold services that will eventually be injected into this
 // handler layer on handler initialization
 type Config struct {
-	R *gin.Engine
+	R           *gin.Engine
+	UserService model.UserService
 }
 
 // NewHandler initializes the handler with required injected services along with http routes
@@ -20,10 +25,11 @@ type Config struct {
 func NewHandler(c *Config) {
 	// Create an account group
 	// Create a handler (which will later have injected services)
-	h := &Handler{} // currently has no properties
-
+	h := &Handler{
+		UserService: c.UserService,
+	}
 	// Create a group, or base url for all routes
-	g := c.R.Group("/api/account")
+	g := c.R.Group(os.Getenv("ACCOUNT_API_URL"))
 
 	g.GET("/me", h.Me)
 	g.POST("/signup", h.Signup)
@@ -35,13 +41,13 @@ func NewHandler(c *Config) {
 	g.PUT("/details", h.Details)
 }
 
-// Me handler calls services for getting
-// a user's details
-func (h *Handler) Me(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"hello": "it's me",
-	})
-}
+// // Me handler calls services for getting
+// // a user's details
+// func (h *Handler) Me(c *gin.Context) {
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"hello": "it's me",
+// 	})
+// }
 
 // Signup handler
 func (h *Handler) Signup(c *gin.Context) {
