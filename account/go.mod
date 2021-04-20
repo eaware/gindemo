@@ -1,4 +1,4 @@
-module github.com/eaware/gindemo
+module github.com/eaware/gindemo/account
 
 go 1.16
 

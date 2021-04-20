@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/eaware/gindemo/account/handler"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,10 +19,8 @@ func main() {
 
 	router := gin.Default()
 
-	router.GET("/api/account", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"hello": "world",
-		})
+	handler.NewHandler(&handler.Config{
+		R: router,
 	})
 
 	srv := &http.Server{
@@ -39,11 +38,8 @@ func main() {
 	log.Printf("Listening on port %v\n", srv.Addr)
 
 	// Wait for kill signal of channel
-
-	// Set up channel on which to send signal notifications.
 	// We must use a buffered channel or risk missing the signal
 	// if we're not ready to receive when the signal is sent.
-
 	quit := make(chan os.Signal, 1)
 
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
